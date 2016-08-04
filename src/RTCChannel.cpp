@@ -66,15 +66,10 @@ void RTCChannel::unsetDataChannel(){
 void RTCChannel::setDataChannel(webrtc::DataChannelInterface *channel){
 
 	//if a channel already exists and is opened close it
-	if(this->channel != NULL &&
-		(this->channel->state() == webrtc::DataChannelInterface::DataState::kConnecting ||
-		this->channel->state() == webrtc::DataChannelInterface::DataState::kOpen)){
+	if(this->channel != NULL && this->channel->state() != webrtc::DataChannelInterface::DataState::kClosed) {
 
 		//if a next channe already exosts and is opened, close it
-		if(this->nextChannel != NULL &&
-			(this->nextChannel->state() == webrtc::DataChannelInterface::DataState::kConnecting ||
-			this->nextChannel->state() == webrtc::DataChannelInterface::DataState::kOpen)){
-
+		if(this->nextChannel != NULL && this->nextChannel->state() != webrtc::DataChannelInterface::DataState::kClosed) {
 			this->nextChannel->Close();
 		}
 

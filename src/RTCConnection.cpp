@@ -42,19 +42,11 @@ RTCConnection::~RTCConnection(){
 SimpleConstraints * RTCConnection::getMediaConstraints(){
 	SimpleConstraints * constraints = new SimpleConstraints;
 
-	std::string kDataChannel = "EnableDtlsSrtp";
-	std::string vDataChannel = "true";
-	constraints->AddMandatory(kDataChannel, vDataChannel);
-
-	std::string kDtlsSrtpKeyAgreement = "DtlsSrtpKeyAgreement";
-	std::string vDtlsSrtpKeyAgreement = "true";
-	constraints->AddMandatory(kDtlsSrtpKeyAgreement, vDtlsSrtpKeyAgreement);
-
+	constraints->AddMandatory("EnableDtlsSrtp","true");
+	constraints->AddMandatory("DtlsSrtpKeyAgreement", "true");
 	constraints->AddMandatory("kEnableSctpDataChannels", "true");
-
 	constraints->AddMandatory("OfferToReceiveAudio", "true");
 	constraints->AddMandatory("OfferToReceiveVideo", "true");
-
 
 	return constraints;
 }

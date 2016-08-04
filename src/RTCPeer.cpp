@@ -12,7 +12,6 @@
 #include "webrtc/base/ssladapter.h"
 #include "webrtc/base/basictypes.h"
 #include "webrtc/base/refcount.h"
-#include "webrtc/base/scoped_ptr.h"
 #include "webrtc/base/scoped_ref_ptr.h"
 #include "webrtc/base/stringencode.h"
 
@@ -137,10 +136,14 @@ bool RTCPeer::offerChannel(webrtc::DataChannelInterface *channel){
 void RTCPeer::cleanConnections() {
 	std::vector<int> garbageConnections;
 
+	bool connectionCleaned = false;
+	
 	pthread_mutex_lock(&mutexConnection);	
 	for(auto kv : connections){
 		if(kv.second->hasTimeoutExpired()) {
-			garbageConnections.push_back(kv.second->getPeerID());			
+			kv.second->close();
+			garbageConnections.push_back(kv.second->getPeerID());	
+			connectionCleaned = true;
 		}
 	}
 
@@ -148,24 +151,26 @@ void RTCPeer::cleanConnections() {
 		connections.erase(garbageConnections[i]);
 	}
 
+	if(connectionCleaned) {
+		std::cout << "[RTC] active connections:" << connections.size() << std::endl;
+	}
+
 	pthread_mutex_unlock(&mutexConnection);
-	
 }
 
 void RTCPeer::deleteConnection(int peerid){
 	rtc::RefCountedObject<RTCConnection> *connection;
 
-	std::cout << "active connections before :" << connections.size() << std::endl;
-
 	try{
 		connection = connections.at(peerid);
+		connection->close();
 		connection->Release();
 		connections.erase(peerid);
 
 	}catch(std::out_of_range& error){
 	}
 	
-	std::cout << "active connections after :" << connections.size() << std::endl;
+	std::cout << "[RTC] active connections :" << connections.size() << std::endl;
 }
 
 RTCConnection * RTCPeer::getConnection(int peerid){
@@ -306,7 +311,7 @@ void RTCPeer::onRemoteICECandidate(int peerid, std::string sdp_mid, int sdp_mlin
 	RTCConnection *connection = getConnection(peerid);
 
 	//Create the received candidate
-	rtc::scoped_ptr<webrtc::IceCandidateInterface> candidate(webrtc::CreateIceCandidate(sdp_mid, sdp_mlineindex, sdp, NULL));
+	std::unique_ptr<webrtc::IceCandidateInterface> candidate(webrtc::CreateIceCandidate(sdp_mid, sdp_mlineindex, sdp, NULL));
 
 	if (!candidate.get()) {
 		std::cout << "[SIG] cannot parse candidate information" << std::endl;

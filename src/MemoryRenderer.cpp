@@ -30,7 +30,7 @@ void MemoryRenderer::OnFrame(const cricket::VideoFrame& frame) {
 	//if(!frame) return;
 
 	const cricket::VideoFrame* rotatedFrame = frame.GetCopyWithRotationApplied();
-	setSize(static_cast<int>(rotatedFrame->GetWidth()), static_cast<int>(rotatedFrame->GetHeight()));
+	setSize(static_cast<int>(rotatedFrame->width()), static_cast<int>(rotatedFrame->height()));
 
 	if(!this->argb) this->argb = new unsigned char[4*w*h];
 

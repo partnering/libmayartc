@@ -4,6 +4,7 @@
 *  Created on: 07 mar 2016
 *      Author: jfellus
 */
+#include <iostream>
 
 #include "MemoryCapturer.hpp"
 
@@ -56,7 +57,7 @@ bool MemoryCapturer::CaptureFrame(const char* img, int w, int h) {
 		}
 	}
 
-	rtc::scoped_ptr<char[]> data(buf);
+	std::unique_ptr<char[]> data(buf);
 	frame.data = data.get();
 	frame.rotation = rotation_;
 
