@@ -24,6 +24,7 @@ class RTCChannel : public RTCChannelInterface, public webrtc::DataChannelObserve
 	private:
 		webrtc::DataChannelInterface *channel;
 		webrtc::DataChannelInterface *nextChannel;
+		webrtc::DataChannelInterface::DataState _channel_state;
 		char *name;
 		int reliable;
 		ReceiveCallback recv_cb;

@@ -106,6 +106,8 @@ void RTCChannel::setNegociationMessage(char * buffer, int bufferSize){
 void RTCChannel::OnStateChange(){
 	if(!channel) return ;
 
+	_channel_state = channel->state();
+
 	std::cout << "[CH] (" << this->name << ")] State changed : "<< channel->state() << " !" <<std::endl;
 
 	if(channel->state() == webrtc::DataChannelInterface::DataState::kOpen && this->negociationMessage != NULL){
@@ -138,7 +140,8 @@ void RTCChannel::OnMessage(const webrtc::DataBuffer& buffer){
 
 
 bool RTCChannel::isConnected(){
-	return channel != NULL && channel->state() == webrtc::DataChannelInterface::DataState::kOpen;
+	return _channel_state;
+	//return channel != NULL && channel->state() == webrtc::DataChannelInterface::DataState::kOpen;
 }
 
 void RTCChannel::sendData(const char* buffer, int bufferSize){
