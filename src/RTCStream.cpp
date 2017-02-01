@@ -20,7 +20,7 @@ RTCStream::RTCStream(const char* name, uint w, uint h) {
 void RTCStream::init(rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> peerConnectionFactory, rtc::Thread* thread) {
 	if(this->capturer) return;
 
-	this->capturer = new MemoryCapturer(thread, w,h);
+	this->capturer = new MemoryCapturer(w,h);
 	
 	rtc::scoped_refptr<webrtc::VideoTrackInterface> track(peerConnectionFactory->CreateVideoTrack(name,peerConnectionFactory->CreateVideoSource(capturer, NULL)));
 	stream = peerConnectionFactory->CreateLocalMediaStream(name);

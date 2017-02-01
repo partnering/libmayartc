@@ -16,7 +16,7 @@ namespace maya {
 
 class FrameObserver;
 
-class MemoryRenderer : public rtc::VideoSinkInterface<cricket::VideoFrame> {
+class MemoryRenderer : public rtc::VideoSinkInterface<webrtc::VideoFrame> {
 public:
 	int w,h;
 	unsigned char* argb;
@@ -26,7 +26,7 @@ public:
 	virtual ~MemoryRenderer();
 
 	void setSize(int w, int h);
-	void OnFrame(const cricket::VideoFrame& frame);
+	void OnFrame(const webrtc::VideoFrame& frame);
 
 	void setFrameObserver(FrameObserver* o);
 };

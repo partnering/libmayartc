@@ -21,13 +21,11 @@ namespace maya {
 
 
 		public:
-			MemoryCapturer(rtc::Thread* thread, uint w, uint h);
+			MemoryCapturer(uint w, uint h);
 			~MemoryCapturer();
 
 			void ResetSupportedFormats(const std::vector<cricket::VideoFormat>& formats) { SetSupportedFormats(formats); }
 			bool CaptureFrame(const char* img, int w, int h);
-
-			void SignalCapturedFrame(cricket::CapturedFrame* frame) { SignalFrameCaptured(this, frame); }
 
 			sigslot::signal1<MemoryCapturer*> SignalDestroyed;
 
