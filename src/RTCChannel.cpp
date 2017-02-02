@@ -24,6 +24,7 @@ RTCChannel::RTCChannel(char * name, int reliable){
 	this->nextChannel = NULL;
 	this->stream_cb = NULL;
 	this->stream_cb_data = NULL;
+	this->_channel_state = webrtc::DataChannelInterface::DataState::kClosed;
 }
 
 RTCChannel::~RTCChannel(){
@@ -140,7 +141,7 @@ void RTCChannel::OnMessage(const webrtc::DataBuffer& buffer){
 
 
 bool RTCChannel::isConnected(){
-	return _channel_state;
+	return _channel_state == webrtc::DataChannelInterface::DataState::kOpen;
 	//return channel != NULL && channel->state() == webrtc::DataChannelInterface::DataState::kOpen;
 }
 
