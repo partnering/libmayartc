@@ -135,6 +135,7 @@ bool RTCConnection::hasTimeoutExpired() {
 
 	if(peerConnection.get() != NULL && currentTime - createOfferTimestamp > RTCCONNECTION_OFFER_TIMEOUT && 
 		peerConnection->ice_connection_state() != webrtc::PeerConnectionInterface::IceConnectionState::kIceConnectionConnected &&
+		peerConnection->ice_connection_state() != webrtc::PeerConnectionInterface::IceConnectionState::kIceConnectionDisconnected && //disconnected status may trigger intermittently on unreliable networks
 		peerConnection->ice_connection_state() != webrtc::PeerConnectionInterface::IceConnectionState::kIceConnectionCompleted) {
 		return true;
 	} else {

@@ -68,8 +68,9 @@ void RTCChannel::setDataChannel(webrtc::DataChannelInterface *channel){
 
 	//if a channel already exists and is opened close it
 	if(this->channel != NULL && this->channel->state() != webrtc::DataChannelInterface::DataState::kClosed) {
+		std::cout << "[CH (" << this->name << ")] Delaying channel setup !" << std::endl;
 
-		//if a next channe already exosts and is opened, close it
+		//if a next channel already exists and is opened, close it
 		if(this->nextChannel != NULL && this->nextChannel->state() != webrtc::DataChannelInterface::DataState::kClosed) {
 			this->nextChannel->Close();
 		}
@@ -116,7 +117,8 @@ void RTCChannel::OnStateChange(){
 		this->negociated = true;
 		this->sendData(this->negociationMessage, this->negociationMessageSize);
 
-	}else if(channel->state() == webrtc::DataChannelInterface::DataState::kClosed){
+	}else if(channel->state() == webrtc::DataChannelInterface::DataState::kClosing ||
+			channel->state() == webrtc::DataChannelInterface::DataState::kClosed) {
 
 		//When the datachannel is closed, unregister it
 		this->negociated = false;
