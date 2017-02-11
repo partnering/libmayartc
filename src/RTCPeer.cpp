@@ -264,7 +264,7 @@ std::vector<std::string> RTCPeer::getChannelNames(){
 	return ret;
 }
 
-void RTCPeer::onConnectionRequest(int peerid, std::vector<std::string> channelnames, std::string turn_url, std::string turn_username, std::string turn_password) {
+void RTCPeer::onConnectionRequest(int peerid, std::vector<std::string> channelnames, std::vector<MayaIceServer> iceservers) {
 
 	std::vector<RTCChannel*> requestedChannels;
 
@@ -302,7 +302,7 @@ void RTCPeer::onConnectionRequest(int peerid, std::vector<std::string> channelna
 		} catch(std::out_of_range &error){}
 	}
 
-	connection->createOffer(turn_url, turn_username, turn_password);
+	connection->createOffer(iceservers);
 }
 
 void RTCPeer::onRemoteICECandidate(int peerid, std::string sdp_mid, int sdp_mlineindex, std::string sdp){

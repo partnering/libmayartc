@@ -17,6 +17,7 @@
 
 
 #include "webrtc/base/json.h"
+#include "webrtc/base/scoped_ref_ptr.h"
 
 #include "MayaSignaling.hpp"
 #include "RTCPeerInterface.hpp"
@@ -257,18 +258,31 @@ class MayaSignaling : public MayaSignalingInterface{
 
 		void processConnect(int peerid, Json::Value message){
 			std::vector<std::string> channels;
+
+			std::vector<Json::Value> turns;
 			Json::Value turn;
-			std::string turn_url;
-			std::string turn_username;
-			std::string turn_password;
+			std::vector<MayaIceServer> iceservers;
+
 			rtc::JsonArrayToStringVector(message["channels"], &channels);
 
-			rtc::GetValueFromJsonObject(message, "turn", &turn);
-			rtc::GetStringFromJsonObject(turn, "url", &turn_url);
-			rtc::GetStringFromJsonObject(turn, "username", &turn_username);
-			rtc::GetStringFromJsonObject(turn, "password", &turn_password);
+				
+			if(rtc::JsonArrayToValueVector(message["turn"], &turns)) {
+				for(int i=0; i < turns.size(); i++) {
+					MayaIceServer iceserver;
+					rtc::GetStringFromJsonObject(turns[i], "url", &iceserver.uri);
+					rtc::GetStringFromJsonObject(turns[i], "username", &iceserver.username);
+					rtc::GetStringFromJsonObject(turns[i], "password", &iceserver.password);
+					iceservers.push_back(iceserver);
+				}
+			} else if(rtc::GetValueFromJsonObject(message, "turn", &turn)) {
+				MayaIceServer iceserver;
+				rtc::GetStringFromJsonObject(turn, "url", &iceserver.uri);
+				rtc::GetStringFromJsonObject(turn, "username", &iceserver.username);
+				rtc::GetStringFromJsonObject(turn, "password", &iceserver.password);
+				iceservers.push_back(iceserver);
+			}
 
-			getPeer()->onConnectionRequest(peerid, channels, turn_url, turn_username, turn_password);
+			getPeer()->onConnectionRequest(peerid, channels, iceservers);
 		}
 
 		void processAnswer(int peerid, Json::Value message){

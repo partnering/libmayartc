@@ -158,18 +158,23 @@ rtc::scoped_refptr<webrtc::DataChannelInterface> RTCConnection::createDataChanne
 	return ch;
 }
 
-void RTCConnection::createOffer(std::string turn_url, std::string turn_username, std::string turn_password){
+void RTCConnection::createOffer(std::vector<MayaIceServer> iceservers){
 	createOfferTimestamp = std::time(NULL);
 	webrtc::PeerConnectionInterface::RTCConfiguration config;
-	webrtc::PeerConnectionInterface::IceServers servers;
-
-	webrtc::PeerConnectionInterface::IceServer turnserver;
-	turnserver.uri = turn_url;
-	turnserver.username = turn_username;
-	turnserver.password = turn_password;
-
-	servers.push_back(turnserver);
+	webrtc::PeerConnectionInterface::IceServers servers;	
 	
+	for(int i = 0; i < iceservers.size(); i++) {
+		webrtc::PeerConnectionInterface::IceServer server;
+		server.urls.push_back(iceservers[i].uri);
+		server.username = iceservers[i].username;
+		server.password = iceservers[i].password;
+		servers.push_back(server);
+	}
+
+	for(int i = 0; i < servers.size(); i++) {
+		std::cout << "[TURN] " << servers[i].urls[0] << " (username: " << servers[i].username << ")" << std::endl;
+	}
+
 	config.servers = servers;
 	peerConnection->SetConfiguration(config);
 	peerConnection->CreateOffer(this, getMediaConstraints());

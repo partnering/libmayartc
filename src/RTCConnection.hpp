@@ -13,6 +13,7 @@
 #include "webrtc/api/peerconnectioninterface.h"
 
 #include "RTCCommon.hpp"
+#include "RTCSignaling.hpp"
 
 namespace maya{
 
@@ -84,7 +85,7 @@ class RTCConnection : public webrtc::PeerConnectionObserver, webrtc::CreateSessi
 		bool hasTimeoutExpired();
 
 		rtc::scoped_refptr<webrtc::DataChannelInterface> createDataChannel(char *name, int reliable);
-		void createOffer(std::string turn_url, std::string turn_username, std::string turn_password);
+		void createOffer(std::vector<MayaIceServer> iceservers);
 
 		void setRemoteSessionDescription(webrtc::SessionDescriptionInterface* session_description);
 		void addStream(rtc::scoped_refptr<webrtc::MediaStreamInterface> stream);
