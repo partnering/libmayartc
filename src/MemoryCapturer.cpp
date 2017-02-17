@@ -9,7 +9,7 @@
 #include "MemoryCapturer.hpp"
 
 #include <libyuv/convert.h>
-#include <webrtc/api/video/i420_buffer.h>
+#include <webrtc/common_video/include/video_frame_buffer.h>
 
 
 
@@ -23,7 +23,7 @@ namespace maya {
 		rotation_(webrtc::kVideoRotation_0) {
 
 			std::vector<cricket::VideoFormat> formats;
-			formats.push_back(cricket::VideoFormat(w, h, cricket::VideoFormat::FpsToInterval(30), cricket::FOURCC_ARGB));
+			formats.push_back(cricket::VideoFormat(w, h, cricket::VideoFormat::FpsToInterval(30), cricket::FOURCC_I420));
 			ResetSupportedFormats(formats);
 		}
 
@@ -37,12 +37,10 @@ namespace maya {
 		}
 		if (!running_) return false;
 
-		size_t size = w*h*4;
-
 		rtc::scoped_refptr<webrtc::I420Buffer> framebuffer = webrtc::I420Buffer::Create(w, h);
 		
 		libyuv::RAWToI420((uint8*)img, 
-			w, 
+			w*3, 
 			framebuffer->MutableDataY(),
 			framebuffer->StrideY(),
 			framebuffer->MutableDataU(),
@@ -55,32 +53,7 @@ namespace maya {
 		OnFrame(webrtc::VideoFrame(framebuffer, rotation_, next_timestamp_ / rtc::kNumNanosecsPerMicrosec), w, h);
 	
 		next_timestamp_ += 33333333;
-
-			
 		
-	/*	cricket::CapturedFrame frame;
-		frame.width = w;
-		frame.height = h;
-		frame.fourcc = cricket::FOURCC_ARGB;
-		frame.data_size = size;
-		frame.time_stamp = initial_unix_timestamp_ + next_timestamp_;
-		next_timestamp_ += 33333333;
-
-		char* buf = new char[size];
-		for(uint y = 0; y<h; y++) {
-			for(uint x=0; x<w; x++) {
-				buf[(y*w+x)*4+2] = img[(y*w+x)*3];
-				buf[(y*w+x)*4+1] = img[(y*w+x)*3+1];
-				buf[(y*w+x)*4] = img[(y*w+x)*3+2];
-			}
-		}
-
-		std::unique_ptr<char[]> data(buf);
-		frame.data = data.get();
-		frame.rotation = rotation_;
-
-		SignalFrameCaptured(this, &frame);
-*/
 		return true;
 	}
 

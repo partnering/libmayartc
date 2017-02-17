@@ -1,7 +1,7 @@
 CXX=g++-4.8
 CC=gcc-4.8
 
-WEBRTC_TRUNK=/home/$(USER)/libs/webrtc/src
+WEBRTC_TRUNK=/home/$(USER)/libs/webrtc-ng/src
 
 DEFINES=-DWEBRTC_POSIX -DV8_DEPRECATION_WARNINGS -DEXPAT_RELATIVE_PATH \
   -DFEATURE_ENABLE_VOICEMAIL -DGTEST_RELATIVE_PATH -DJSONCPP_RELATIVE_PATH \
@@ -24,7 +24,7 @@ DEFINES=-DWEBRTC_POSIX -DV8_DEPRECATION_WARNINGS -DEXPAT_RELATIVE_PATH \
   -DSSL_USE_NSS -DHAVE_NSS_SSL_H -DSSL_USE_NSS_RNG -DNDEBUG -DNVALGRIND \
   -DDYNAMIC_ANNOTATIONS_ENABLED=0
 
-WEBRTC_BIN=${WEBRTC_TRUNK}/out/Release
+WEBRTC_BIN=${WEBRTC_TRUNK}/out/Default
 
 INCLUDES=-I${WEBRTC_TRUNK} -I${WEBRTC_TRUNK}/third_party \
     -I${WEBRTC_TRUNK}/third_party/webrtc -I${WEBRTC_TRUNK}/webrtc \
@@ -39,15 +39,13 @@ CFLAGS=-fstack-protector -O3 --param=ssp-buffer-size=4 -pthread \
     -Wno-unused-result -fno-ident -fdata-sections -ffunction-sections \
     -funwind-tables -fno-rtti -fno-threadsafe-statics -Wno-deprecated
 
-WEBRTC_LIBS=$(shell find ${WEBRTC_BIN} -name "*.a" | grep -v test | grep -v tools) \
-	$(shell find ${WEBRTC_BIN}/obj/third_party/libvpx -name "*.o") \
-	$(shell find ${WEBRTC_BIN}/obj/third_party/jsoncpp -name "*.o")
+WEBRTC_LIBS=$(shell find ${WEBRTC_BIN} -name "libwebrtc_full.a" | grep -v test | grep -v tools | grep -v do_not_use) 
 
 LIBRARIES=-lgthread-2.0 -lrt -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgio-2.0 \
     -lpangoft2-1.0 -lpangocairo-1.0 -lgdk_pixbuf-2.0 -lcairo -lpango-1.0 \
     -lfreetype -lfontconfig -lgobject-2.0 -lglib-2.0 -lX11 -lXcomposite \
     -lXext -lXrender -lnss3 -lnssutil3 -lsmime3 -lplds4 -lplc4 -lnspr4 -ldl \
-    -lexpat -lm
+    -lexpat -lm -lavformat -lavcodec-ffmpeg -lavcodec -lavutil
 
 LDFLAGS=-Wl,-z,now -Wl,-z,relro -pthread -Wl,-z,noexecstack -fPIC
 

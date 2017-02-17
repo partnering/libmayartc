@@ -27,9 +27,8 @@ void MemoryRenderer::setSize(int w, int h) {
 
 
 void MemoryRenderer::OnFrame(const webrtc::VideoFrame& frame) {
-/*	//if(!frame) return;
-
-	const webrtc::VideoFrame* rotatedFrame = frame.GetCopyWithRotationApplied();
+//TODO (sylvmahe) : update to new webrtc::VideoFrame API
+/*	const webrtc::VideoFrame* rotatedFrame = frame.GetCopyWithRotationApplied();
 	setSize(static_cast<int>(rotatedFrame->width()), static_cast<int>(rotatedFrame->height()));
 
 	if(!this->argb) this->argb = new unsigned char[4*w*h];
@@ -37,7 +36,7 @@ void MemoryRenderer::OnFrame(const webrtc::VideoFrame& frame) {
 	static int i=0;
 
 	rotatedFrame->ConvertToRgbBuffer(cricket::FOURCC_ARGB, argb, 4*w*h,0);
-	if(frameObserver) frameObserver->onFrame(argb, w, h); */
+	if(frameObserver) frameObserver->onFrame(argb, w, h);*/
 }
 
 
