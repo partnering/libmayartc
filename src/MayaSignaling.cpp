@@ -207,21 +207,28 @@ class MayaSignaling : public MayaSignalingInterface{
 			rtc::GetIntFromJsonObject(jmessage, "peerId", &peerid);
 
 			//If client ID not defined, abort
-			if(peerid == -1) return ;
+			if (peerid == -1) return ;
 
-			if(func.compare("ListChannels") == 0){
+			if (func.compare("ListChannels") == 0){
 				processListChannels(peerid, jmessage);
-			}else if(func.compare("Connect") == 0){
+			} else if (func.compare("Connect") == 0){
 				processConnect(peerid, jmessage);
-			}else if(func.compare("ICECandidate") == 0){
+			} else if (func.compare("ICECandidate") == 0){
 				processICECandidate(peerid, jmessage);
-			}else if(func.compare("Answer") == 0){
+			} else if (func.compare("Answer") == 0){
 				processAnswer(peerid, jmessage);
 			// jfellus 26/02/2016
-			}else if(func.compare("ChannelsStreams") == 0) {
+			} else if (func.compare("ChannelsStreams") == 0) {
 				processChannelsStreams(peerid, jmessage);
-			}
+			} else if (func.compare("Close") == 0) {
+				processClose(peerid, jmessage);
+			}	
 			//
+		}
+
+		void processClose (int peerid, Json::Value message) {
+			std::cout << "Closing connection (" << peerid << ")" << std::endl;
+			getPeer()->deleteConnection(peerid);
 		}
 
 		void processListChannels(int peerid, Json::Value message){
@@ -251,7 +258,6 @@ class MayaSignaling : public MayaSignalingInterface{
 			rtc::GetStringFromJsonObject(candidate, kCandidateSdpMidName, &sdp_mid);
 			rtc::GetIntFromJsonObject(candidate, kCandidateSdpMlineIndexName, &sdp_mlineindex);
 			rtc::GetStringFromJsonObject(candidate, kCandidateSdpName, &sdp);
-
 
 			getPeer()->onRemoteICECandidate(peerid, sdp_mid, sdp_mlineindex, sdp);
 		}
