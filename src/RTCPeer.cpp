@@ -269,10 +269,10 @@ void RTCPeer::onConnectionRequest(int peerid, std::vector<std::string> channelna
 	std::vector<RTCChannel*> requestedChannels;
 
 	//limit the max number of simultaneous peer connections
-	if (connections.size() > 5) {
+/*	if (connections.size() > 5) {
 		std::cout << "[RTCPeer] rejected peer connection (maxPeerConnections reached)" << std::endl;
 		return ;
-	}	
+	}*/
 
 	for(int i=0;i<channelnames.size();i++){
 		try{
