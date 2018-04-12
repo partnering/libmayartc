@@ -2,43 +2,90 @@
 HOW-TO : Build WebRTC ( http://www.webrtc.org/reference/getting-started )
 =========================================================================
 
-Prerequisites :
---------------
+# Prerequisites
 
-- Install depot_tools ( https://sites.google.com/a/chromium.org/dev/developers/how-tos/install-depot-tools ) :
+## Install depot_tools ( https://sites.google.com/a/chromium.org/dev/developers/how-tos/install-depot-tools http://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up) :
+- Get depot tools :
 
-	get depot tools :
-	  cd /home/user/bin/
+```bash
+	  cd ~/bin/
 	  git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git 
+```
+- Add this at the end of ~/.bashrc :
 
-	add this at the end of ~/.bashrc :
-	  export PATH="$PATH":home/user/bin/depot_tools
+```bash
 
-
-- install linux dependencies [Ubuntu 12.04] ( http://www.webrtc.org/reference/getting-started/prerequisite-sw ):
-
-	sudo apt-get install g++ python libnss3-dev libasound2-dev libpulse-dev libjpeg62-dev libxv-dev libgtk2.0-dev libexpat1-dev libxss-dev libxtst-dev libdrm-dev libgconf2-dev libgnome-keyring-dev libgcrypt11-dev libpci-dev libudev-dev mesa-common-dev libgl1-mesa-dev openjdk-6-jdk
-
+	  export PATH="$PATH":$HOME/bin/depot_tools
+```
 
 
-Get the code :
--------------
+## Get the code : (https://webrtc.org/native-code/development/)
 
-cd /home/user/libs
-mkdir webrtc
-cd webrtc
-gclient config http://webrtc.googlecode.com/svn/trunk
+```bash
+	cd /home/user/libs
+	mkdir webrtc
+	cd webrtc
+	fetch --nohooks webrtc
+	gclient sync
+```
+> The checkout size is large due the use of the Chromium build toolchain and many dependencies. Estimated size:  
+>     Linux: 6.4 GB.  
+>     Linux (with Android): 16 GB (of which ~8 GB is Android SDK+NDK images).
 
-export JAVA_HOME=/usr/lib/jvm/java-1.6.0-openjdk
+- install linux dependencies [Ubuntu] ( https://webrtc.org/native-code/development/prerequisite-sw/ ):
 
-gclient sync --force  (very long)
+> deprecated	### sudo apt-get install g++ python libnss3-dev libasound2-dev libpulse-dev libjpeg62-dev libxv-dev libgtk2.0-dev libexpat1-dev libxss-dev libxtst-dev libdrm-dev libgconf2-dev libgnome-keyring-dev libgcrypt11-dev libpci-dev libudev-dev mesa-common-dev libgl1-mesa-dev openjdk-6-jdk
+
+> A script is provided for Ubuntu, which is unfortunately only available after your first gclient sync:
+
+```bash
+	cd src
+	./build/install-build-deps.sh
+```
 
 
-Build :
-------
+> deprecated export JAVA_HOME=/usr/lib/jvm/java-1.6.0-openjdk
 
-cd trunk/
+> deprecated gclient sync --force  (very long)
+
+## Checkout adequate branch
+- According to the chromium-browser target, different branches are available. The number of the branch corresponds the chromium version.
+- To see available release branches, run:
+
+```bash
+git branch -r
+```
+
+- To create a local branch tracking a remote release branch (in this example, the 43 branch):
+
+```bash
+git checkout -b my_branch refs/remotes/branch-heads/43
+gclient sync
+```
+
+
+
+## Build for Release
+The building process is based on ninja (https://webrtc.org/native-code/development/)
+
+- Building Release version
+
+```bash
+gn gen out/Release --args='is_debug=false'
 ninja -C out/Release
+```
+
+- You may need to clean built objects
+
+```bash
+gn clean out/Default
+```
+
+
+> deprecated ```bash
+	cd trunk/
+	ninja -C out/Release
+	```
 
 
 

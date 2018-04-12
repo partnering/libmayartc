@@ -1,5 +1,5 @@
-CXX=g++-4.8
-CC=gcc-4.8
+CXX=g++-5
+CC=gcc-5
 
 WEBRTC_TRUNK=/home/$(USER)/libs/webrtc/src
 
@@ -54,7 +54,7 @@ DEBUG=-g
 
 .PHONY: all clean
 
-all: build/Main build/cmain
+all: build-dir build/Main build/cmain
 
 sigrun:
 	node test/server.js
@@ -72,6 +72,10 @@ prepare-package:
 	mkdir -p dist/libmayartc/usr/include
 	mkdir -p dist/libmayartc/usr/include/mayartc/
 	cp src/*.h* dist/libmayartc/usr/include/mayartc/
+
+build-dir:
+	mkdir -p build/obj
+	mkdir -p build/deps
 
 build/Main: build/obj/Main.o build/libmayartc.so
 	${CXX} ${DEBUG} ${LDFLAGS} -Lbuild/ build/obj/Main.o -o build/Main -lmayartc -ljpeg 
